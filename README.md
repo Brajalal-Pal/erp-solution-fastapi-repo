@@ -47,7 +47,13 @@ $ pytest
 
 $ ruff check . --fix
 
+# Push the changes to github repo
+$ git config --global user.email "brajalal@rediffmail.com"
+$ git config --global user.name "Brajalal Pal"
+$ git remote add origin https://github.com/Brajalal-Pal/erp-solution-fastapi-repo.git
+
 # -------------------------------------------------------------------------------------------
 
 ```
+
 
