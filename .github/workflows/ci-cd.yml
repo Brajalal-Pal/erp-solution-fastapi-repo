@@ -131,6 +131,6 @@ jobs:
       - name: Push Docker image to ECR
         run: |
           docker push \
-            ${{ steps.login-ecr.outputs.registry }}/fastapi-devops-demo:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/erp-solution-fastapi-repo:${{ github.sha }}
 
       
