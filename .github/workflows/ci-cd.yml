@@ -9,6 +9,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
 
   test:
@@ -39,7 +43,7 @@ jobs:
 
 
   docker:
-    name: Build Docker Image
+    name: Build, Scan and Push Docker Image
     runs-on: ubuntu-latest
 
     needs:
@@ -67,3 +71,34 @@ jobs:
           ignore-unfixed: true
           vuln-type: os,library
           severity: CRITICAL,HIGH
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          aws-region: ap-south-1
+          role-to-assume: arn:aws:iam::251355111970:role/GitHubActionsECRPushRole
+
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # ------------------------------------------------------------------------------------------------------
+      # Tag Docker Image
+      # ------------------------------------------------------------------------------------------------------
+      - name: Tag Docker image
+        run: |
+          docker tag \
+            erp-solution-fastapi-repo:${{ github.sha }} \
+            ${{ steps.login-ecr.outputs.registry }}/erp-solution-fastapi-repo:${{ github.sha }}
+
+      
+      # ------------------------------------------------------------------------------------------------------
+      # Push Docker image to ECR
+      # ------------------------------------------------------------------------------------------------------
+      - name: Push Docker image to ECR
+        run: |
+          docker push \
+            ${{ steps.login-ecr.outputs.registry }}/fastapi-devops-demo:${{ github.sha }}
+
+      
