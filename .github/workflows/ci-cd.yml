@@ -36,3 +36,21 @@ jobs:
       - name: Run lint
         run: |
           ruff check .
+
+
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    needs:
+      - test
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t erp-solution-fastapi-repo:${{ github.sha }} \
+            .
