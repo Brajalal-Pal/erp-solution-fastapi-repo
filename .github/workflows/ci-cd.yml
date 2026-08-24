@@ -54,3 +54,11 @@ jobs:
           docker build \
             -t erp-solution-fastapi-repo:${{ github.sha }} \
             .
+      - name: Scan Docker image
+        uses: aquasecurity/trivy-action@0.33.0
+        with:
+          image-ref: erp-solution-fastapi-repo:${{ github.sha }}
+          format: table
+          exit-code: 1
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
